@@ -1,0 +1,69 @@
+random@pwnable:~$ gdb ./random
+GNU gdb (Ubuntu 7.11.1-0ubuntu1~16.5) 7.11.1
+Copyright (C) 2016 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.  Type "show copying"
+and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+<http://www.gnu.org/software/gdb/documentation/>.
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from ./random...(no debugging symbols found)...done.
+(gdb) disassemble main
+Dump of assembler code for function main:
+   0x00000000004005f4 <+0>:     push   %rbp
+   0x00000000004005f5 <+1>:     mov    %rsp,%rbp
+   0x00000000004005f8 <+4>:     sub    $0x10,%rsp
+   0x00000000004005fc <+8>:     mov    $0x0,%eax
+   0x0000000000400601 <+13>:    callq  0x400500 <rand@plt>
+   0x0000000000400606 <+18>:    mov    %eax,-0x4(%rbp)
+   0x0000000000400609 <+21>:    movl   $0x0,-0x8(%rbp)
+   0x0000000000400610 <+28>:    mov    $0x400760,%eax
+   0x0000000000400615 <+33>:    lea    -0x8(%rbp),%rdx
+   0x0000000000400619 <+37>:    mov    %rdx,%rsi
+   0x000000000040061c <+40>:    mov    %rax,%rdi
+   0x000000000040061f <+43>:    mov    $0x0,%eax
+   0x0000000000400624 <+48>:    callq  0x4004f0 <__isoc99_scanf@plt>
+   0x0000000000400629 <+53>:    mov    -0x8(%rbp),%eax
+   0x000000000040062c <+56>:    xor    -0x4(%rbp),%eax
+   0x000000000040062f <+59>:    cmp    $0xdeadbeef,%eax
+   0x0000000000400634 <+64>:    jne    0x400656 <main+98>
+   0x0000000000400636 <+66>:    mov    $0x400763,%edi
+   0x000000000040063b <+71>:    callq  0x4004c0 <puts@plt>
+   0x0000000000400640 <+76>:    mov    $0x400769,%edi
+   0x0000000000400645 <+81>:    mov    $0x0,%eax
+   0x000000000040064a <+86>:    callq  0x4004d0 <system@plt>
+   0x000000000040064f <+91>:    mov    $0x0,%eax
+   0x0000000000400654 <+96>:    jmp    0x400665 <main+113>
+   0x0000000000400656 <+98>:    mov    $0x400778,%edi
+   0x000000000040065b <+103>:   callq  0x4004c0 <puts@plt>
+   0x0000000000400660 <+108>:   mov    $0x0,%eax
+   0x0000000000400665 <+113>:   leaveq
+   0x0000000000400666 <+114>:   retq
+End of assembler dump.
+(gdb) break *0x400624
+Breakpoint 1 at 0x400624
+(gdb) r
+Starting program: /home/random/random
+
+Breakpoint 1, 0x0000000000400624 in main ()
+(gdb) print *(unsigned int *)(($rbp) - 4)
+$1 = 1804289383
+(gdb) print 0xdeadbeef ^ 1804289383
+$2 = 3039230856
+(gdb) continue
+Continuing.
+3039230856
+Good!
+/bin/cat: flag: Permission denied
+[Inferior 1 (process 77489) exited normally]
+(gdb) q
+random@pwnable:~$ ./random
+3039230856
+Good!
+Mommy, I thought libc random is unpredictable...
