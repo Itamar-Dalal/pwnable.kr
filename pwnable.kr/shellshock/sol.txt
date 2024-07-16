@@ -1,0 +1,12 @@
+dalal@ItamarLaptop:/mnt/c/users/dalal/desktop/private_projects/ctf/pwnable.kr/shellshock$ python3 exploit.py
+[+] Connecting to pwnable.kr on port 2222: Done
+[*] shellshock@pwnable.kr:
+    Distro    Ubuntu 16.04
+    OS:       linux
+    Arch:     amd64
+    Version:  4.4.179
+    ASLR:     Enabled
+[+] Opening new channel: 'sh': Done
+$ $ only if I knew CVE-2014-6271 ten years ago..!!
+
+[*] Closed SSH channel with pwnable.kr
