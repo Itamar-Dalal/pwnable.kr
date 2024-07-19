@@ -54,4 +54,6 @@ explanation:
 The trick with this challenge is writing "/bin/cat flag" without using '/' and 'flag' (and I can't use env variables).
 After some thought, I understood that I needed to pass it in runtime, after the execution of the filter function.
 An easy way to do it is by using the "read" command. With this command, I can write "/bin/cat flag" and then pass it to the "system" function for execution.
-It took me a long time to realize that I needed to use single quotes instead of double quotes. Double quotes run the command even before calling the main function, so it will not pass the filter function. Instead, I want to pass it as a string literal, and then the "system" function will first run the "read" command, and the "echo" command will pass the "/bin/cat flag" to the "system" function for the real execution.
+It took me a long time to realize that I needed to use single quotes instead of double quotes. 
+Double quotes run the command even before calling the main function, so it will not pass the filter function.
+Instead, I want to pass it as a string literal, and then the "system" function will first run the "read" command, and the "echo" command will pass the "/bin/cat flag" to the "system" function for the real execution.
