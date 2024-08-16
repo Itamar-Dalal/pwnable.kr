@@ -1,0 +1,24 @@
+input2@pwnable:~$ cd /tmp
+input2@pwnable:/tmp$ mkdir dir123
+input2@pwnable:/tmp$ cd dir123
+input2@pwnable:/tmp/dir123$ nano sol.py
+Unable to create directory /home/input2/.nano: Permission denied
+It is required for saving/loading search history or cursor positions.
+
+Press Enter to continue
+
+input2@pwnable:/tmp/dir123$ ln -s /home/input2/flag flag
+input2@pwnable:/tmp/dir123$ python sol.py
+[+] Starting local process '/home/input2/input': pid 302582
+[+] Opening connection to 127.0.0.1 on port 1111: Done
+[*] Closed connection to 127.0.0.1 port 1111
+[*] Switching to interactive mode
+Welcome to pwnable.kr
+Let's see if you know how to give input to program
+Just give me correct inputs then you will get the flag :)
+Stage 1 clear!
+Stage 2 clear!
+Stage 3 clear!
+Stage 4 clear!
+Stage 5 clear!
+Mommy! I learned how to pass various input in Linux :)
