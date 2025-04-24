@@ -1,0 +1,12 @@
+dalal@ItamarLaptop:/mnt/c/Users/dalal/desktop/private_projects/ctf/pwnable.kr/collision$ python3 sol.py
+[+] Connecting to pwnable.kr on port 2222: Done
+[*] col@pwnable.kr:
+    Distro    Ubuntu 22.04
+    OS:       linux
+    Arch:     amd64
+    Version:  5.15.0
+    ASLR:     Enabled
+[+] Starting remote process bytearray(b'./col') on pwnable.kr: pid 3079347
+[+] Flag: Two_hash_collision_Nicely
+[*] Stopped remote process 'col' on pwnable.kr (pid 3079347)
+[*] Closed connection to 'pwnable.kr'
