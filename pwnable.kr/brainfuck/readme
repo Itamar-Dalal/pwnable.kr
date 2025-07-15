@@ -1,3 +1,0 @@
-`nc 0 9001`
-then get shell!
-nc 0 2000 if service is down
