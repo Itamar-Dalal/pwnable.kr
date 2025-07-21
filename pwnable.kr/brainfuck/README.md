@@ -103,7 +103,27 @@ The exactubale for this challange recive brainfuck code and excute it. When deco
 As you can see, the `[` and `]` are not supported. Our goal is to find a bug and exploit it to get a shell. 
 
 ## Analysis  
+The vunrability in this program is that there are not boundries in memory, so we can change the pointer `p` to any location we want and read/write to it.
+### #1 idea
+My first idea was to overwrite the got (global offset table) so that some function the program use (like `getchar()`) will have the address of a functiion I will create, which will be:
+```c
+void main(){
+  system("/bin/sh");
+}
+```
+Scince `system` is not in the got, I would need to find the base address of libc, and add to it the `system` offset (by looking in the `so` file).
+To find the base address on libc, I would use brainfuck to move to the got and read the address of some function, and than i would substruct this address with the offset of this function in so `so` file.
+I also used this methond for the string "/bin/sh/". So at the end, my function looked like this:
+```asm
+BITS 32
+section .text
 
+push dword [0xf7ed8b2b]
+call 0xf7dc5170
+```
+*Note:* when i solved this, i havent noticed there is ASLR, so this should not work.
+I than converted this asm file to hex, and write this hex to memory using brainfuck. The brainfuck pointer of the program starts at `0x804a0a0`, so this is where my function start.
+I than change the `getchar()` function in the got to point to my function (which is in `0x804a0a0`). This is the Exploit code:
 ```python
 from pwn import *
 
@@ -125,6 +145,13 @@ p.send(payload)
 p.interactive()
 session.close()
 ```
+However, when i run this, it didnt work because of a simple reason: the NX bit was enabled. The NX bit is a security feature in modern processors that marks certain memory regions (like `.bss`) as non-executable. I wrote my function in the `.bss` section, so it couldnt run because of it.
+
+### #2 idea
+For my second idea, i went for a diffrent approch. I understood that `system` should be one of the function that the program already using. So my was to change some function i can call (like `putchar`) in the got to the `main` function and change `strlen` to system. In that way, i can also run my brainfuck code (and change the got) and also use the `fgets` in the second run to write "/bin/sh" to a buffer which `strlen` use, resulting the calling of `system("/bin/sh")`.
+However, it also didnt work. Thats because in the first run, when i change the address of `strlen` in the got, the program is using the new address of `strlen` while in the loop, which cause the rest of the brainfuck code to not run.
+
+### #3 ides (and last!)
 
 ## Exploit Code
 ```python
