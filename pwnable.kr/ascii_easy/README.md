@@ -12,6 +12,6 @@ The code provided for the challenge is as follows:
 pop eax ; ret       → eax = 5 (sys_open)
 pop ebx ; ret       → ebx = "filename"
 pop ecx ; ret       → ecx = O_RDONLY
-int 0x80; rer       → syscall
+int 0x80; ret       → syscall
 ```
 ## Exploit Code
