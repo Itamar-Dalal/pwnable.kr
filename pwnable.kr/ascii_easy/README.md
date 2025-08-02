@@ -9,6 +9,7 @@ The code provided for the challenge is as follows:
 ## Analysis  
 
 ```asm
-0x8048312 : 70 00
+0x00b8a40 : execvp
+0x0000325 : 64 00 (d/0)
 ```
 ## Exploit Code
