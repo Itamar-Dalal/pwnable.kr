@@ -7,11 +7,6 @@ The code provided for the challenge is as follows:
 ```
 
 ## Analysis  
+0x00032a70 : xor eax, eax ; ret
 
-```asm
-pop eax ; ret       → eax = 5 (sys_open)
-pop ebx ; ret       → ebx = "filename"
-pop ecx ; ret       → ecx = O_RDONLY
-int 0x80; ret       → syscall
-```
 ## Exploit Code
