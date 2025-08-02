@@ -10,6 +10,6 @@ The code provided for the challenge is as follows:
 
 ```asm
 0x00b8a40 : execvp
-0x0000325 : 64 00 (d/0)
+0x000973c : 63 00 (c /0)
 ```
 ## Exploit Code
