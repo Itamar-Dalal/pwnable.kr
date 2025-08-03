@@ -12,6 +12,6 @@ The code provided for the challenge is as follows:
 0x00b8a40 : execvp
 0x000973c : 63 00 (c /0)
 
-export PATH="$PATH:/home/itamar/bin"
+export PATH="$PATH:/tmp/dalal"
 ```
 ## Exploit Code
