@@ -1,4 +1,4 @@
-# Pwnable.kr SimpleLogin CTF Writeup
+# Pwnable.kr simplelogin CTF Writeup
 
 ## Problem Description
 The code for this challenge is:
