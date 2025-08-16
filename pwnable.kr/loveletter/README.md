@@ -2,8 +2,9 @@
 
 ## Problem Description
 
-`0xffffda30`
+`env sh -c bash`
 
 ## Analysis
 
 ## Exploit Code
+
