@@ -98,8 +98,19 @@ buf[0x100]            - 256 bytes
 
 My first idea was to overflow eax_5 (prolog length) with 0, so `loveletter` will start with my input and than i can call a shell using: `sh -c bash `. thats because this way i can make the program to ignore to rest of the input (that is needed for the buffer overflow). thats because this way i give to `sh` two arguments: `bash` (a shell that i can read the flag from it) and the rest of the input. `sh` will only use the first argument and ignore the second.
 
-However, there is a problem. in order to overflow eax_5 with 0, i needed to program to do this:
-``
+However, there is a problem. There is no way to overflow eax_5 with 0 because the input buffer is increasing by two (and to change it to 0 it needs to be by 1). in addion i cant write 0 in the buffer because it will see it as null terminator and ignore it.
+
+So i cant overflow it with 0 but i can with any other number. after some thinking, i relized i can use a part of the prolog string (from its start) to my command. the problem is my command (`sh -c bash `) starts with s and the prolog string starts with e. so what i can do it to use a command that starts with e and can be given a command as an argument that it will run it. 
+
+After some recaherch, i found that `env` is great for this case. i can run: `env sh -c bash ` and it will open a bash shell and i can read the flag. all i needed to do it to change the prolog length to 1 and in the start on my input write `nv sh -c bash ` and when combining them it will run `system("env sh -c bash AAAAAAAA...)` which will open a shell.
+
+To overflow eax_5 with 1, i just needed to write this at the end of the input:
+`...AAA + #  + 0x01 + \0, 0x0c + 0x00 + 0x00 + 0x00` (the last 4 bytes is the prolog length) 
+so after the `protect()` function it will look like this:
+`...AAA + a5 +  99  + e2, 0x01 + 0x00 + 0x00 + 0x00`
+
+In conclusion, the input should look like this:
+`nv sh -c bash AAAAAAA...#/x01`
 
 ## Exploit Code
 ```python
@@ -120,5 +131,3 @@ print(payload)
 p.sendline(payload)
 p.interactive() # cat flag
 ```
-
-
