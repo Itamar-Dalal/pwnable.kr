@@ -1,8 +1,11 @@
-# Pwnable.kr loveletter CTF Writeup
+# Pwnable.kr Loveletter CTF Writeup
 
 ## Problem Description
+
 The code of the program is:
+
 ### main
+
 ```c
 080493a5  int32_t main(int32_t argc, char** argv, char** envp)
 
@@ -45,6 +48,7 @@ The code of the program is:
 ```
 
 ### protect
+
 ```c
 08049216  int32_t protect(char* arg1)
 
@@ -69,25 +73,31 @@ The code of the program is:
 08049399      noreturn
 ```
 
-when running, we see this:
+When running, we see this:
+
 ```bash
 loveletter@ubuntu:~$ ./loveletter
 ♥ My lover's name is : itamar
 ♥ Whatever happens, I'll protect her...
 ♥ Impress her upon my memory...
-♥ Her name echos in my mind...
+♥ Her name echoes in my mind...
 I love itamar very much!
 ```
-The program gets an input and replace every character that is in the "blacklist" (can cause command injection) with an heart. we need to get a shell and read the flag.
+
+The program takes an input and replaces every character in the "blacklist" (which can cause command injection) with a heart. We need to get a shell and read the flag.
 
 ## Analysis
-The first thing i saw is that there is a bug in the `protect()` function. the bug is when the program replaces a character with an heart, it doesnt put a null terminator at the end. 
-The bug is on this line:
-`memcpy(&arg1[strlen(arg1)], &var_110, eax_13)`.
-it should be:
+
+The first thing I noticed is a bug in the `protect()` function. The bug occurs when the program replaces a character with a heart but does not add a null terminator at the end. The issue is on this line:
+
+`memcpy(&arg1[strlen(arg1)], &var_110, eax_13)`
+
+It should be:
+
 `memcpy(&arg1[strlen(arg1)], &var_110, eax_13 + 1)`
 
-in addition, each character is one bytes, however the heart is 3 bytes. that means that when replace a charater witg an heart, it makes the input string longer (by 2 bytes). We can also see that the max length of the input is 0x100 (256 characters), and its located on the stack. that means that we can use the fact that the `protect()` fucntion makes our input buffer longer to preform buffer overflow in the stack. when we look in the `main()` function we can see that its stack looks like this:
+Additionally, each character is one byte, but the heart is three bytes. This means that replacing a character with a heart increases the input string's length by two bytes. We can see that the maximum length of the input is 0x100 (256 bytes), and it is located on the stack. This allows us to leverage the `protect()` function's behavior of extending the input buffer to perform a buffer overflow on the stack. Looking at the `main()` function, the stack layout is as follows:
+
 ```
 eax_3 (epilog length) - 4 bytes
 ----------------------
@@ -96,23 +106,28 @@ eax_5 (prolog length) - 4 bytes
 buf[0x100]            - 256 bytes
 ```
 
-My first idea was to overflow eax_5 (prolog length) with 0, so `loveletter` will start with my input and than i can call a shell using: `sh -c bash `. thats because this way i can make the program to ignore to rest of the input (that is needed for the buffer overflow). thats because this way i give to `sh` two arguments: `bash` (a shell that i can read the flag from it) and the rest of the input. `sh` will only use the first argument and ignore the second.
+My initial idea was to overflow `eax_5` (prolog length) with 0, so `loveletter` would start with my input, allowing me to call a shell using: `sh -c bash `. This way, the program would ignore the rest of the input (needed for the buffer overflow). By doing this, I could pass two arguments to `sh`: `bash` (to open a shell and read the flag) and the rest of the input, which `sh` would ignore.
 
-However, there is a problem. There is no way to overflow eax_5 with 0 because the input buffer is increasing by two (and to change it to 0 it needs to be by 1). in addion i cant write 0 in the buffer because it will see it as null terminator and ignore it.
+However, there is a problem. There is no way to overflow `eax_5` with 0 because the input buffer increases by two bytes (and to set it to 0, it would need to increase by one byte). Additionally, I cannot write a 0 in the buffer because it would be treated as a null terminator and ignored.
 
-So i cant overflow it with 0 but i can with any other number. after some thinking, i relized i can use a part of the prolog string (from its start) to my command. the problem is my command (`sh -c bash `) starts with s and the prolog string starts with e. so what i can do it to use a command that starts with e and can be given a command as an argument that it will run it. 
+Although I cannot overflow `eax_5` with 0, I can overflow it with any other number. After some thought, I realized I could use part of the prolog string (from its start) in my command. The issue is that my command (`sh -c bash `) starts with 's', while the prolog string starts with 'e'. Therefore, I needed a command that starts with 'e' and can take another command as an argument to execute it.
 
-After some recaherch, i found that `env` is great for this case. i can run: `env sh -c bash ` and it will open a bash shell and i can read the flag. all i needed to do it to change the prolog length to 1 and in the start on my input write `nv sh -c bash ` and when combining them it will run `system("env sh -c bash AAAAAAAA...)` which will open a shell.
+After some research, I found that `env` is perfect for this case. I can run: `env sh -c bash `, which will open a bash shell, allowing me to read the flag. To achieve this, I needed to set the prolog length to 1 and start my input with `nv sh -c bash`. When combined, this would execute `system("env sh -c bash AAAAAAAA...")`, opening a shell.
 
-To overflow eax_5 with 1, i just needed to write this at the end of the input:
-`...AAA + #  + 0x01 + \0, 0x0c + 0x00 + 0x00 + 0x00` (the last 4 bytes is the prolog length) 
-so after the `protect()` function it will look like this:
-`...AAA + a5 +  99  + e2, 0x01 + 0x00 + 0x00 + 0x00`
+To overflow `eax_5` with 1, I needed to append the following to the input:
+
+`...AAA + # + 0x01 + \0, 0x0c + 0x00 + 0x00 + 0x00` (the last four bytes represent the prolog length)
+
+After the `protect()` function processes it, it will look like this:
+
+`...AAA + a5 + 99 + e2, 0x01 + 0x00 + 0x00 + 0x00`
 
 In conclusion, the input should look like this:
+
 `nv sh -c bash AAAAAAA...#/x01`
 
 ## Exploit Code
+
 ```python
 from pwn import *
 
