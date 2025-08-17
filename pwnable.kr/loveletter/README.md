@@ -78,8 +78,23 @@ loveletter@ubuntu:~$ ./loveletter
 ♥ Her name echos in my mind...
 I love itamar very much!
 ```
+The program gets an input and replace every character that is in the "blacklist" (can cause command injection) with an heart. we need to get a shell and read the flag.
 
 ## Analysis
+The first thing i saw is that there is a bug in the `protect()` function. the bug is when the program replaces a character with an heart, it doesnt put a null terminator at the end. 
+The bug is on this line:
+`memcpy(&arg1[strlen(arg1)], &var_110, eax_13)`.
+it should be:
+`memcpy(&arg1[strlen(arg1)], &var_110, eax_13 + 1)`
+
+in addition, each character is one bytes, however the heart is 3 bytes. that means that when replace a charater witg an heart, it makes the input string longer (by 2 bytes). We can also see that the max length of the input is 0x100 (256 characters), and its located on the stack. that means that we can use the fact that the `protect()` fucntion makes our input buffer longer to preform buffer overflow in the stack. when we look in the `main()` function we can see that its stack looks like this:
+```
+eax_3 (epilog length) - 4 bytes
+----------------------
+eax_5 (prolog length) - 4 bytes
+----------------------
+buf[0x100]            - 256 bytes
+```
 
 ## Exploit Code
 ```python
@@ -100,3 +115,4 @@ print(payload)
 p.sendline(payload)
 p.interactive() # cat flag
 ```
+
