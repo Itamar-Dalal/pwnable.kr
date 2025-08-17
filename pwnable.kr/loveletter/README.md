@@ -96,6 +96,11 @@ eax_5 (prolog length) - 4 bytes
 buf[0x100]            - 256 bytes
 ```
 
+My first idea was to overflow eax_5 (prolog length) with 0, so `loveletter` will start with my input and than i can call a shell using: `sh -c bash `. thats because this way i can make the program to ignore to rest of the input (that is needed for the buffer overflow). thats because this way i give to `sh` two arguments: `bash` (a shell that i can read the flag from it) and the rest of the input. `sh` will only use the first argument and ignore the second.
+
+However, there is a problem. in order to overflow eax_5 with 0, i needed to program to do this:
+``
+
 ## Exploit Code
 ```python
 from pwn import *
@@ -115,4 +120,5 @@ print(payload)
 p.sendline(payload)
 p.interactive() # cat flag
 ```
+
 
