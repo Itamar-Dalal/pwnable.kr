@@ -122,33 +122,72 @@ int main(void){
         return 0;
 }
 
-memcpy@ubuntu:~$ cat super.pl
-#!/usr/bin/perl
-use Socket;
-$port = 9022;
-@exec = ("/home/memcpy_pwn/memcpy");
-socket(SERVER, PF_INET, SOCK_STREAM, 6);
-setsockopt(SERVER, SOL_SOCKET, SO_REUSEADDR, pack("l", 1));
-bind(SERVER, sockaddr_in($port, INADDR_ANY));
-listen(SERVER,SOMAXCONN);
-$SIG{"CHLD"} = "IGNORE";
-while($addr = accept CLIENT, SERVER){
-    $| = 1;
-    ($port, $packed_ip) = sockaddr_in($addr);
-    $datestring = localtime();
-    $ip = inet_ntoa($packed_ip);
-    print "$ip: $port connected($datestring)\n";
-    fork || do {
-        $| = 1;
-        close SERVER;
-        open STDIN,  "<&CLIENT";
-        open STDOUT, ">&CLIENT";
-        open STDERR, ">&CLIENT";
-        close CLIENT;
-        exec @exec;
-        exit 0;
-    };
-    close CLIENT;
-}
-close SERVER;
+memcpy@ubuntu:~$ nc 0 9022
+Hey, I have a boring assignment for CS class.. :(
+The assignment is simple.
+-----------------------------------------------------
+- What is the best implementation of memcpy?        -
+- 1. implement your own slow/fast version of memcpy -
+- 2. compare them with various size of data         -
+- 3. conclude your experiment and submit report     -
+-----------------------------------------------------
+This time, just help me out with my experiment and get flag
+No fancy hacking, I promise :D
+specify the memcpy amount between 8 ~ 16 : 16
+specify the memcpy amount between 16 ~ 32 : 32
+specify the memcpy amount between 32 ~ 64 : 40
+specify the memcpy amount between 64 ~ 128 : 120
+specify the memcpy amount between 128 ~ 256 : 248
+specify the memcpy amount between 256 ~ 512 : 504
+specify the memcpy amount between 512 ~ 1024 : 1016
+specify the memcpy amount between 1024 ~ 2048 : 2040
+specify the memcpy amount between 2048 ~ 4096 : 4088
+specify the memcpy amount between 4096 ~ 8192 : 8184
+ok, lets run the experiment with your configuration
+experiment 1 : memcpy with buffer size 16
+ellapsed CPU cycles for slow_memcpy : 5624
+ellapsed CPU cycles for fast_memcpy : 1106
+
+experiment 2 : memcpy with buffer size 32
+ellapsed CPU cycles for slow_memcpy : 1596
+ellapsed CPU cycles for fast_memcpy : 1604
+
+experiment 3 : memcpy with buffer size 40
+ellapsed CPU cycles for slow_memcpy : 1798
+ellapsed CPU cycles for fast_memcpy : 1940
+
+experiment 4 : memcpy with buffer size 120
+ellapsed CPU cycles for slow_memcpy : 4898
+ellapsed CPU cycles for fast_memcpy : 2644
+
+experiment 5 : memcpy with buffer size 248
+ellapsed CPU cycles for slow_memcpy : 9848
+ellapsed CPU cycles for fast_memcpy : 2678
+
+experiment 6 : memcpy with buffer size 504
+ellapsed CPU cycles for slow_memcpy : 19778
+ellapsed CPU cycles for fast_memcpy : 2958
+
+experiment 7 : memcpy with buffer size 1016
+ellapsed CPU cycles for slow_memcpy : 39316
+ellapsed CPU cycles for fast_memcpy : 3228
+
+experiment 8 : memcpy with buffer size 2040
+ellapsed CPU cycles for slow_memcpy : 79154
+ellapsed CPU cycles for fast_memcpy : 3562
+
+experiment 9 : memcpy with buffer size 4088
+ellapsed CPU cycles for slow_memcpy : 157698
+ellapsed CPU cycles for fast_memcpy : 4812
+
+experiment 10 : memcpy with buffer size 8184
+ellapsed CPU cycles for slow_memcpy : 327922
+ellapsed CPU cycles for fast_memcpy : 7492
+
+thanks for helping my experiment!
+flag : b0thers0m3_m3m0ry_4lignment
 ```
+
+<h2><ul>Explanation:</ul></h2> The implementation of the fast `memcpy` uses the `MOVNTPS` and `MOVDQA` instructions. These instructions require addresses that are aligned to 16 bytes. The problem is that the program uses `malloc` to allocate these addresses, and `malloc` returns 8-byte aligned addresses, not 16-byte aligned ones. This misalignment causes the execution to fail.
+
+When we run the program, it only crashes after experiment 3, because until the length exceeds 64 bytes, the program uses the slow memcpy. To make the program work despite this bug, we need to provide values that result in `malloc` returning 16-byte aligned addresses. Once this is done, the flag should be printed as expected.
