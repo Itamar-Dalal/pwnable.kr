@@ -187,6 +187,8 @@ ellapsed CPU cycles for fast_memcpy : 7492
 thanks for helping my experiment!
 flag : b0thers0m3_m3m0ry_4lignment
 ```
-<h2><u>Explanation:</u></h2> The implementation of the fast `memcpy` uses the `MOVNTPS` and `MOVDQA` instructions. These instructions require addresses that are aligned to 16 bytes. The problem is that the program uses `malloc` to allocate these addresses, and `malloc` returns 8-byte aligned addresses, not 16-byte aligned ones. This misalignment causes the execution to fail.
+<h2><u>Explanation:</u></h2>
+
+The implementation of the fast `memcpy` uses the `MOVNTPS` and `MOVDQA` instructions. These instructions require addresses that are aligned to 16 bytes. The problem is that the program uses `malloc` to allocate these addresses, and `malloc` returns 8-byte aligned addresses, not 16-byte aligned ones. This misalignment causes the execution to fail.
 
 When we run the program, it only crashes after experiment 3, because until the length exceeds 64 bytes, the program uses the slow memcpy. To make the program work despite this bug, we need to provide values that result in `malloc` returning 16-byte aligned addresses. Once this is done, the flag should be printed as expected.
