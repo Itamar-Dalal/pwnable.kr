@@ -81,7 +81,7 @@ The code of the program is:
 08049187      system(line: "echo `date` >> log")
 08049192      return 0
 ```
-<ul>Note:</ul> The code for the rest of the functions is not neccecry for the solution of the challnge, we just need to know what they do.
+Note: The code for the rest of the functions is not neccecry for the solution of the challnge, we just need to know what they do.
 
 ## Analysis
 
