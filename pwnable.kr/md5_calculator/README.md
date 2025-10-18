@@ -89,7 +89,7 @@ Note: The code for the rest of the functions is not neccecry for the solution of
 
 ### process_hash
 
-The function get input from the user until he use enter. Than it copies 400 bytes (chars) from `stdin` to the address `0x804b0e0`, and than it sets the first 200 bytes of `0x804b0e0` to `0`.
+The function get input from the user until he use enter. Than it copies 1024 bytes (chars) from `stdin` to the address `0x804b0e0`, and than it sets the first 512 bytes of `0x804b0e0` to `0`.
 
 ## Exploit Code
 
