@@ -85,6 +85,12 @@ Note: The code for the rest of the functions is not neccecry for the solution of
 
 ## Analysis
 
+The canary is set in these lines:
+```asm
+.text:08048EDF                 mov     eax, large gs:14h
+.text:08048EE5                 mov     [ebp+var_C], eax
+```
+
 ### maim
 
 ### process_hash
