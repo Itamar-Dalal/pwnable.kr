@@ -88,10 +88,25 @@ Note: The code for the rest of the functions is not neccecry for the solution of
 The canary is set in these lines:
 ```asm
 .text:08048EDF                 mov     eax, large gs:14h
-.text:08048EE5                 mov     [ebp+var_C], eax
+.text:08048EE5                 mov     [ebp-0xc], eax
 ```
 
-### maim
+so the canary is located in `[ebp-0xc]`.
+From your disassembly:
+```asm
+mov [ebp-0xc], eax          ; store the canary here
+lea eax, [ebp-0x2c]         ; address of start of array
+mov [ebp-0x34], eax         ; save base pointer
+```
+
+So we have:
+[ebp-0x0c]	saved stack canary	
+[ebp-0x2c]	start of local array (arr[0])	
+[ebp-0x34]	a pointer variable that holds &arr[0]
+
+so the array starts at `[ebp-0x2x]` which is ebp-44 and its size is 8 so its total size is 32 bytes, which means the arr[8] is in address ebp-12 (44-32=12) which in hex is `[ebp-0xc]`, and thats where the canary is saved.
+
+### main
 
 ### process_hash
 
