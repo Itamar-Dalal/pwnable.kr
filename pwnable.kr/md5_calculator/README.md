@@ -84,14 +84,13 @@ The code of the program is:
 
 ## Analysis
 
-The 
-The canary is set in these lines:
+The program first using `srand` function to decleare a seed for the random function. the seed is the current time. This means that if we know the eaxct time the program ran, we can know all the random values in the program. after that the program calls `my_hash` function which genreate hash. It does that by creating an array of length 8 that countain random values (that we can predict). Than it calculate the hash like this: `result = vals[5] + vals[1] + vals[2] - vals[3] + vals[7] + vals[4] - vals[6] + var[8]`. As we can see, there is buffer overflow here, because `var[8]` is outside the array. So the hash countain some 4 byte value on the stack, which we can calculate and find. To find whats that value, we need to look in the disasmbley. In there we can see that the canary is set in these lines:
 ```asm
 .text:08048EDF                 mov     eax, large gs:14h
 .text:08048EE5                 mov     [ebp-0xc], eax
 ```
-
 so the canary is located in `[ebp-0xc]`.
+
 From your disassembly:
 ```asm
 mov [ebp-0xc], eax          ; store the canary here
