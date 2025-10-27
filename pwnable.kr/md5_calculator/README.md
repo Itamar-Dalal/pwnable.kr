@@ -90,20 +90,15 @@ The program first using `srand` function to decleare a seed for the random funct
 .text:08048EE5                 mov     [ebp-0xc], eax
 ```
 so the canary is located in `[ebp-0xc]`.
-
-From your disassembly:
+In addition we can see from your disassembly:
 ```asm
-mov [ebp-0xc], eax          ; store the canary here
-lea eax, [ebp-0x2c]         ; address of start of array
-mov [ebp-0x34], eax         ; save base pointer
+mov [ebp-0xc], eax
+lea eax, [ebp-0x2c]
+mov [ebp-0x34], eax
 ```
+So the array starts at `[ebp-0x2c]` which is `[ebp-44]` and its size is 8 so its total size is 32 bytes, which means the `arr[8]` is in address `[ebp-12]` (44-32=12) which in hex is `[ebp-0xc]`, and thats where the canary is saved.
+So the hash is equal to `vals[5] + vals[1] + vals[2] - vals[3] + vals[7] + vals[4] - vals[6] + canary`, and since we know all the radom values, we can calculate the canary.
 
-So we have:
-[ebp-0x0c]	saved stack canary	
-[ebp-0x2c]	start of local array (arr[0])	
-[ebp-0x34]	a pointer variable that holds &arr[0]
-
-so the array starts at `[ebp-0x2x]` which is ebp-44 and its size is 8 so its total size is 32 bytes, which means the arr[8] is in address ebp-12 (44-32=12) which in hex is `[ebp-0xc]`, and thats where the canary is saved.
 
 ## Exploit Code
 
