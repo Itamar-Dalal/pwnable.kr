@@ -97,7 +97,10 @@ lea eax, [ebp-0x2c]
 mov [ebp-0x34], eax
 ```
 So the array starts at `[ebp-0x2c]` which is `[ebp-44]` and its size is 8 so its total size is 32 bytes, which means the `arr[8]` is in address `[ebp-12]` (44-32=12) which in hex is `[ebp-0xc]`, and thats where the canary is saved.
-So the hash is equal to `vals[5] + vals[1] + vals[2] - vals[3] + vals[7] + vals[4] - vals[6] + canary`, and since we know all the radom values, we can calculate the canary.
+So the hash is equal to `vals[5] + vals[1] + vals[2] - vals[3] + vals[7] + vals[4] - vals[6] + canary`, and since we know all the radom values, we can calculate the canary. All we need to do is to run the exploit code locally (so time() will return the same number), create an array of 8 random numbers and calculating the hash without the canary. Than we need to take the hash the program gave us and subtruct from it the hash we calculated, and than we will get the canary.
+
+The second part of the exploit is on the `process_hash()` function. In this function, there is another buffer overflow bug: there is on the stack an array of length `0x200` bytes (512 bytes), but the program lets us write `0x400` (1024 bytes) to it. However, because there is stack protection (canary), we cant overwrite the stack. Fourntly, we already know the canary, so we simpliy need to overwrite the stack with what we want and write the canary we found in its original place. This way we can overwrite whatever we want on the stack.
+
 
 
 ## Exploit Code
