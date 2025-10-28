@@ -84,23 +84,51 @@ The code of the program is:
 
 ## Analysis
 
-The program first using `srand` function to decleare a seed for the random function. the seed is the current time. This means that if we know the eaxct time the program ran, we can know all the random values in the program. after that the program calls `my_hash` function which genreate hash. It does that by creating an array of length 8 that countain random values (that we can predict). Than it calculate the hash like this: `result = vals[5] + vals[1] + vals[2] - vals[3] + vals[7] + vals[4] - vals[6] + var[8]`. As we can see, there is buffer overflow here, because `var[8]` is outside the array. So the hash countain some 4 byte value on the stack, which we can calculate and find. To find whats that value, we need to look in the disasmbley. In there we can see that the canary is set in these lines:
+The program first uses the `srand` function to seed the PRNG (pseudo-random number generator). The seed is the current time. This means that if we know the exact time the program ran, we can predict all the random values produced by `rand()`.
+
+After that the program calls the `my_hash` function which generates a hash. It does this by creating an array of length 8 that contains random values (which we can predict). Then it calculates the hash like this:
+
+```
+result = vals[5] + vals[1] + vals[2] - vals[3] + vals[7] + vals[4] - vals[6] + var[8]
+```
+
+As we can see, there is a buffer overflow here because `var[8]` is outside the array. So the hash contains some 4-byte value from the stack, which we can calculate and find. To find what that value is, we need to look at the disassembly. There we can see the canary is set in these lines:
+
 ```asm
 .text:08048EDF                 mov     eax, large gs:14h
 .text:08048EE5                 mov     [ebp-0xc], eax
 ```
-so the canary is located in `[ebp-0xc]`.
-In addition we can see from your disassembly:
+
+So the canary is located at `[ebp-0xc]`.
+
+From the disassembly we also see:
+
 ```asm
 mov [ebp-0xc], eax
 lea eax, [ebp-0x2c]
 mov [ebp-0x34], eax
 ```
-So the array starts at `[ebp-0x2c]` which is `[ebp-44]` and its size is 8 so its total size is 32 bytes, which means the `arr[8]` is in address `[ebp-12]` (44-32=12) which in hex is `[ebp-0xc]`, and thats where the canary is saved.
-So the hash is equal to `vals[5] + vals[1] + vals[2] - vals[3] + vals[7] + vals[4] - vals[6] + canary`, and since we know all the radom values, we can calculate the canary. All we need to do is to run the exploit code locally (so time() will return the same number), create an array of 8 random numbers and calculating the hash without the canary. Than we need to take the hash the program gave us and subtruct from it the hash we calculated, and than we will get the canary.
 
-The second part of the exploit is on the `process_hash()` function. In this function, there is another buffer overflow bug: there is on the stack an array of length `0x200` bytes (512 bytes), but the program lets us write `0x400` (1024 bytes) to it. However, because there is stack protection (canary), we cant overwrite the stack. Fourntly, we already know the canary, so we simpliy need to overwrite the stack with what we want and write the canary we found in its original place. This way we can overwrite whatever we want on the stack (encoded with base 64).
-So we can use this vunrability to do ROP by overwriting the return address so it will return to the address `0x8049187` (which is `call system`) instead of the address of `main`. After that we need to change its arugment on the stack so it will be an address to the string `/bin/sh\0`. However, this string doesnt exsist in the program, so we need to write it in the buffer and calculate the address of where we wrote it to. In conculostion, the payload should look like this: `base64_encode(A * 512 + canary + [address of 'call system'] + [adress of "\bin\sh"]) + "/bin/sh\0"` (note the `"/bin/sh\0"` should not be encoded to base 64 because we use the address thats in the `.bss` section and our input is the same there).
+So the array starts at `[ebp-0x2c]` (which is `[ebp-44]`) and its size is 8 entries, so its total size is 32 bytes. That means `arr[8]` is at address `[ebp-12]` (44 − 32 = 12), which in hex is `[ebp-0xc]`, and that's where the canary is saved.
+
+Therefore the hash equals `vals[5] + vals[1] + vals[2] - vals[3] + vals[7] + vals[4] - vals[6] + canary`. Since we know all the random values, we can calculate the canary. All we need to do is run the exploit code locally (so `time()` returns the same value), create an array of 8 random numbers and calculate the hash without the canary. Then take the hash the program gives us and subtract the hash we calculated — the difference is the canary.
+
+---
+
+The second part of the exploit is in the `process_hash()` function. In this function there is another buffer overflow: on the stack there is an array of length `0x200` bytes (512 bytes), but the program allows us to write `0x400` (1024 bytes) to it. However, because of stack protection (the canary), we cannot overwrite the stack successfully unless we preserve the canary.
+
+Fortunately, we already know the canary, so we simply need to overwrite the stack with our payload and write the original canary value back in its saved location. This way we can overwrite the return address and perform a ROP-style redirect.
+
+To exploit this, overwrite the return address so it points to `0x8049187` (which is the `call system` address) instead of the address of `main`. We must also place an argument on the stack that points to the string `/bin/sh\0`. Since that string does not exist elsewhere in the program, write it into our buffer and calculate the address where it will reside.
+
+In conclusion, the payload should look like this:
+
+```
+base64_encode(A * 512 + canary + [address of `call system`] + [address of "/bin/sh\0"]) + "/bin/sh\0"
+```
+
+(Note: the trailing `"/bin/sh\0"` should not be base64-encoded because we rely on the address in the `.bss` section and our input will appear there.)
+
 
 
 ## Exploit Code
