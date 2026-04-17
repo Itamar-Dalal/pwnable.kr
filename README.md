@@ -12,7 +12,7 @@ pwnable.kr writeups (sort of...)
 
 | Challenge | Solved | Writeup |
 |-----------|--------|---------|
-| fd | ✅ | [Link](./pwnable.kr/fd) |
+| fd | ✅ | - |
 | collision | ✅ | [Link](./pwnable.kr/collision) |
 | bof | ❌ | — |
 | string | ❌ | — |
