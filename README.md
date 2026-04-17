@@ -12,23 +12,23 @@ pwnable.kr writeups (sort of...)
 
 | Challenge | Solved | Writeup |
 |-----------|--------|---------|
-| fd | ✅ | [Link](./toddlers-bottle/fd) |
-| collision | ✅ | [Link](./toddlers-bottle/collision) |
+| fd | ✅ | [Link](./fd) |
+| collision | ✅ | [Link](./collision) |
 | bof | ❌ | — |
 | string | ❌ | — |
-| passcode | ✅ | [Link](./toddlers-bottle/passcode) |
-| random | ✅ | [Link](./toddlers-bottle/random) |
-| input | ✅ | [Link](./toddlers-bottle/input) |
-| leg | ✅ | [Link](./toddlers-bottle/leg) |
-| mistake | ✅ | [Link](./toddlers-bottle/mistake) |
+| passcode | ✅ | [Link](./passcode) |
+| random | ✅ | [Link](./random) |
+| input | ✅ | [Link](./input) |
+| leg | ✅ | [Link](./leg) |
+| mistake | ✅ | [Link](./mistake) |
 | shellshock | ❌ | — |
-| cmd1 | ✅ | [Link](./toddlers-bottle/cmd1) |
-| cmd2 | ✅ | [Link](./toddlers-bottle/cmd2) |
-| lotto | ✅ | [Link](./toddlers-bottle/lotto) |
-| blackjack | ✅ | [Link](./toddlers-bottle/blackjack) |
+| cmd1 | ✅ | [Link](./cmd1) |
+| cmd2 | ✅ | [Link](./cmd2) |
+| lotto | ✅ | [Link](./lotto) |
+| blackjack | ✅ | [Link](./blackjack) |
 | uaf | ❌ | — |
-| memcpy | ✅ | [Link](./toddlers-bottle/memcpy) |
-| asm | ✅ | [Link](./toddlers-bottle/asm) |
+| memcpy | ✅ | [Link](./memcpy) |
+| asm | ✅ | [Link](./asm) |
 | coin1 | ❌ | — |
  
 ---
@@ -37,14 +37,14 @@ pwnable.kr writeups (sort of...)
   
 | Challenge | Solved | Writeup |
 |-----------|--------|---------|
-| brain fuck | ✅ | [Link](./rookiss/brain-fuck) |
-| simple login | ✅ | [Link](./rookiss/simple-login) |
-| loveletter | ✅ | [Link](./rookiss/loveletter) |
-| md5 calculator | ✅ | [Link](./rookiss/md5-calculator) |
-| syscall | ✅ | [Link](./rookiss/syscall) |
-| echo2 | ✅ | [Link](./rookiss/echo2) |
-| coin2 | ✅ | [Link](./rookiss/coin2) |
-| cmd3 | ✅ | [Link](./rookiss/cmd3) |
+| brain fuck | ✅ | [Link](./brain-fuck) |
+| simple login | ✅ | [Link](./simple-login) |
+| loveletter | ✅ | [Link](./loveletter) |
+| md5 calculator | ✅ | [Link](./md5-calculator) |
+| syscall | ✅ | [Link](./syscall) |
+| echo2 | ✅ | [Link](./echo2) |
+| coin2 | ✅ | [Link](./coin2) |
+| cmd3 | ✅ | [Link](./cmd3) |
 | otp | ❌ | — |
 | blukat | ❌ | — |
 | horcruxes | ❌ | — |
@@ -55,8 +55,8 @@ pwnable.kr writeups (sort of...)
   
 | Challenge | Solved | Writeup |
 |-----------|--------|---------|
-| ascii_easy | ✅ | [Link](./grotesque/ascii-easy) |
-| crypto1 | ✅ | [Link](./grotesque/crypto1) |
+| ascii_easy | ✅ | [Link](./ascii-easy) |
+| crypto1 | ✅ | [Link](./crypto1) |
 | echo | ❌ | — |
 | ascii_hard | ❌ | — |
 | cipher1 | ❌ | — |
