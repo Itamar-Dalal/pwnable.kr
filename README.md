@@ -12,23 +12,23 @@ pwnable.kr writeups (sort of...)
 
 | Challenge | Solved | Writeup |
 |-----------|--------|---------|
-| fd | ✅ | [Link](./fd) |
-| collision | ✅ | [Link](./collision) |
+| fd | ✅ | [Link](./pwnable.kr/fd) |
+| collision | ✅ | [Link](./pwnable.kr/collision) |
 | bof | ❌ | — |
 | string | ❌ | — |
-| passcode | ✅ | [Link](./passcode) |
-| random | ✅ | [Link](./random) |
-| input | ✅ | [Link](./input) |
-| leg | ✅ | [Link](./leg) |
-| mistake | ✅ | [Link](./mistake) |
+| passcode | ✅ | [Link](./pwnable.kr/passcode) |
+| random | ✅ | [Link](./pwnable.kr/random) |
+| input | ✅ | [Link](./pwnable.kr/input) |
+| leg | ✅ | [Link](./pwnable.kr/leg) |
+| mistake | ✅ | [Link](./pwnable.kr/mistake) |
 | shellshock | ❌ | — |
-| cmd1 | ✅ | [Link](./cmd1) |
-| cmd2 | ✅ | [Link](./cmd2) |
-| lotto | ✅ | [Link](./lotto) |
-| blackjack | ✅ | [Link](./blackjack) |
+| cmd1 | ✅ | [Link](./pwnable.kr/cmd1) |
+| cmd2 | ✅ | [Link](./pwnable.kr/cmd2) |
+| lotto | ✅ | [Link](./pwnable.kr/lotto) |
+| blackjack | ✅ | [Link](./pwnable.kr/blackjack) |
 | uaf | ❌ | — |
-| memcpy | ✅ | [Link](./memcpy) |
-| asm | ✅ | [Link](./asm) |
+| memcpy | ✅ | [Link](./pwnable.kr/memcpy) |
+| asm | ✅ | [Link](./pwnable.kr/asm) |
 | coin1 | ❌ | — |
  
 ---
@@ -37,14 +37,14 @@ pwnable.kr writeups (sort of...)
   
 | Challenge | Solved | Writeup |
 |-----------|--------|---------|
-| brain fuck | ✅ | [Link](./brain-fuck) |
-| simple login | ✅ | [Link](./simple-login) |
-| loveletter | ✅ | [Link](./loveletter) |
-| md5 calculator | ✅ | [Link](./md5-calculator) |
-| syscall | ✅ | [Link](./syscall) |
-| echo2 | ✅ | [Link](./echo2) |
-| coin2 | ✅ | [Link](./coin2) |
-| cmd3 | ✅ | [Link](./cmd3) |
+| brain fuck | ✅ | [Link](./pwnable.kr/brain-fuck) |
+| simple login | ✅ | [Link](./pwnable.kr/simple-login) |
+| loveletter | ✅ | [Link](./pwnable.kr/loveletter) |
+| md5 calculator | ✅ | [Link](./pwnable.kr/md5-calculator) |
+| syscall | ✅ | [Link](./pwnable.kr/syscall) |
+| echo2 | ✅ | [Link](./pwnable.kr/echo2) |
+| coin2 | ✅ | [Link](./pwnable.kr/coin2) |
+| cmd3 | ✅ | [Link](./pwnable.kr/cmd3) |
 | otp | ❌ | — |
 | blukat | ❌ | — |
 | horcruxes | ❌ | — |
@@ -55,8 +55,8 @@ pwnable.kr writeups (sort of...)
   
 | Challenge | Solved | Writeup |
 |-----------|--------|---------|
-| ascii_easy | ✅ | [Link](./ascii-easy) |
-| crypto1 | ✅ | [Link](./crypto1) |
+| ascii_easy | ✅ | [Link](./pwnable.kr/ascii-easy) |
+| crypto1 | ✅ | [Link](./pwnable.kr/crypto1) |
 | echo | ❌ | — |
 | ascii_hard | ❌ | — |
 | cipher1 | ❌ | — |
