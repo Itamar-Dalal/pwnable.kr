@@ -9,9 +9,7 @@ pwnable.kr writeups (sort of...)
 ---
  
 ## 1. Toddler's Bottle
- 
-> Challenges suitable for beginners. Basic concepts of system hacking.
- 
+
 | Challenge | Solved | Writeup |
 |-----------|--------|---------|
 | fd | ✅ | [Link](./toddlers-bottle/fd) |
@@ -36,9 +34,7 @@ pwnable.kr writeups (sort of...)
 ---
  
 ## 2. Rookiss
- 
-> Intermediate level challenges. Requires deeper exploitation knowledge.
- 
+  
 | Challenge | Solved | Writeup |
 |-----------|--------|---------|
 | brain fuck | ✅ | [Link](./rookiss/brain-fuck) |
@@ -56,9 +52,7 @@ pwnable.kr writeups (sort of...)
 ---
  
 ## 3. Grotesque
- 
-> Hard challenges. Advanced exploitation techniques required.
- 
+  
 | Challenge | Solved | Writeup |
 |-----------|--------|---------|
 | ascii_easy | ✅ | [Link](./grotesque/ascii-easy) |
@@ -71,9 +65,7 @@ pwnable.kr writeups (sort of...)
 ---
  
 ## 4. Hacker's Secret
- 
-> Secret challenges for elite hackers.
- 
+  
 | Challenge | Solved | Writeup |
 |-----------|--------|---------|
 | tiny_easy | ❌ | — |
