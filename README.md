@@ -59,7 +59,7 @@ pwnable.kr writeups (sort of...)
 
 | Challenge | Solved | Writeup |
 |-----------|--------|---------|
-| rootkit | ❌ | — |
+| rootkit | ✅ | [Link](./pwnable.kr/rootkit) |
 | ascii | ❌ | — |
 | aeg | ❌ | — |
 | coin2 | ✅ | [Link](./pwnable.kr/coin2) |
