@@ -14,13 +14,13 @@ pwnable.kr writeups (sort of...)
 |-----------|--------|---------|
 | fd | ✅ | — |
 | collision | ✅ | [Link](./pwnable.kr/collision) |
-| bof | ❌ | ✅ | [Link](./pwnable.kr/bof) |
+| bof | ✅ | [Link](./pwnable.kr/bof) |
 | passcode | ✅ | [Link](./pwnable.kr/passcode) |
 | random | ✅ | [Link](./pwnable.kr/random) |
 | input2 | ✅ | [Link](./pwnable.kr/input) |
 | leg | ✅ | [Link](./pwnable.kr/leg) |
 | mistake | ✅ | [Link](./pwnable.kr/mistake) |
-| coin1 | ❌ | — |
+| coin1 | ✅ | [Link](./pwnable.kr/coin1) |
 | blackjack | ✅ | [Link](./pwnable.kr/blackjack) |
 | lotto | ✅ | [Link](./pwnable.kr/lotto) |
 | cmd1 | ✅ | [Link](./pwnable.kr/cmd1) |
