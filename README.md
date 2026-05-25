@@ -27,7 +27,7 @@ pwnable.kr writeups (sort of...)
 | cmd2 | ✅ | [Link](./pwnable.kr/cmd2) |
 | memcpy | ✅ | [Link](./pwnable.kr/memcpy) |
 | asm | ✅ | [Link](./pwnable.kr/asm) |
-| horcruxes | ❌ | — |
+| horcruxes | ✅ | [Link](./pwnable.kr/horcruxes) |
 
 ---
 
