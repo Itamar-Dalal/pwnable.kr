@@ -14,7 +14,7 @@ pwnable.kr writeups (sort of...)
 |-----------|--------|---------|
 | fd | ✅ | — |
 | collision | ✅ | [Link](./pwnable.kr/collision) |
-| bof | ❌ | — |
+| bof | ❌ | ✅ | [Link](./pwnable.kr/bof) |
 | passcode | ✅ | [Link](./pwnable.kr/passcode) |
 | random | ✅ | [Link](./pwnable.kr/random) |
 | input2 | ✅ | [Link](./pwnable.kr/input) |
@@ -64,7 +64,7 @@ pwnable.kr writeups (sort of...)
 | aeg | ❌ | — |
 | coin2 | ✅ | [Link](./pwnable.kr/coin2) |
 | maze | ❌ | — |
-| wtf | ❌ | — |
+| wtf | ✅ | [Link](./pwnable.kr/wtf) |
 | note | ❌ | — |
 | starcraft | ❌ | — |
 | cmd3 | ✅ | [Link](./pwnable.kr/cmd3) |
