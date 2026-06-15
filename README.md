@@ -83,7 +83,7 @@ pwnable.kr writeups (sort of...)
 | Challenge | Solved | Writeup |
 |-----------|--------|---------|
 | softmmu | ❌ | — |
-| dos4fun | ❌ | — |
+| dos4fun | ✅ | [Link](./pwnable.kr/dos4fun) |
 | towelroot | ❌ | — |
 | nuclear | ❌ | — |
 | malware | ❌ | — |
