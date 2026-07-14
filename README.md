@@ -89,6 +89,6 @@ pwnable.kr writeups (sort of...)
 | malware | ❌ | — |
 | tiny_hard | ❌ | — |
 | kcrc | ❌ | — |
-| exynos | ❌ | — |
+| exynos | ✅ | [Link](./pwnable.kr/exynos) |
 | pwnsandbox | ❌ | — |
 | asm2 | ❌ | — |
