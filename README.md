@@ -35,7 +35,7 @@ pwnable.kr writeups (sort of...)
 
 | Challenge | Solved | Writeup |
 |-----------|--------|---------|
-| brain fuck | ✅ | [Link](./pwnable.kr/brain-fuck) |
+| brain fuck | ✅ | [Link](./pwnable.kr/brainfuck) |
 | md5 calculator | ✅ | [Link](./pwnable.kr/md5-calculator) |
 | simple login | ✅ | [Link](./pwnable.kr/simple-login) |
 | otp | ❌ | — |
