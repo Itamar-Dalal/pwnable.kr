@@ -84,7 +84,7 @@ pwnable.kr writeups (sort of...)
 |-----------|--------|---------|
 | softmmu | ❌ | — |
 | dos4fun | ✅ | [Link](./pwnable.kr/dos4fun) |
-| towelroot | ❌ | — |
+| towelroot | ✅ | [Link](./pwnable.kr/towelroot) |
 | nuclear | ❌ | — |
 | malware | ❌ | — |
 | tiny_hard | ❌ | — |
